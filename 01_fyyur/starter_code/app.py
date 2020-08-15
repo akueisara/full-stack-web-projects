@@ -13,6 +13,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
+
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -258,12 +259,44 @@ def create_venue_form():
 def create_venue_submission():
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
-
-  # on successful db insert, flash success
-  flash('Venue ' + request.form['name'] + ' was successfully listed!')
-  # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
-  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  form = VenueForm()
+  if form.validate_on_submit():
+    try:
+      venue = Venue(
+        name=request.form['name'],
+        city=request.form['city'],
+        state=request.form['state'],
+        address=request.form['address'],
+        phone=request.form['phone'],
+        image_link=request.form['image_link'],
+        seeking_talent= request.form['seeking_talent'] == 'Yes',
+        seeking_description=request.form['seeking_description'],
+        website=request.form['website'],
+        facebook_link=request.form['facebook_link']
+      )
+      for genre in request.form.getlist('genres'):
+        existing_genre = Genre.query.filter_by(name=genre).one_or_none()
+        if existing_genre:
+            venue.genres.append(existing_genre)
+        else:
+          new_genre = Genre(name=genre)
+          db.session.add(new_genre)
+          venue.genres.append(new_genre)
+      db.session.add(venue)
+      db.session.commit()
+      # on successful db insert, flash success
+      flash('Venue ' + request.form['name'] + ' was successfully listed!')
+    # TODO: on unsuccessful db insert, flash an error instead.
+    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
+    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    except:
+      db.session.rollback()
+      flash('An error occurred. Venue ' + request.form['name'] + ' could not be listed.')
+    finally:
+      db.session.close()
+  else:
+    flash('Venue ' + request.form['name'] + ' failed due to validation error(s)!')
+    flash(form.errors)
   return render_template('pages/home.html')
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
