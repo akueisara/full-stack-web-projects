@@ -13,6 +13,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
+import sys 
 
 #----------------------------------------------------------------------------#
 # App Config.
@@ -581,12 +582,34 @@ def create_shows():
 def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
   # TODO: insert form data as a new Show record in the db, instead
-
-  # on successful db insert, flash success
-  flash('Show was successfully listed!')
-  # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Show could not be listed.')
-  # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+  form = ShowForm()
+  if form.validate_on_submit():
+    try:
+      existing_artist = Artist.query.filter_by(id=request.form['artist_id']).one_or_none()
+      existing_venue = Venue.query.filter_by(id=request.form['venue_id']).one_or_none()
+      if existing_artist == None or existing_venue == None:
+        flash('Artist or Venue does not exists.')
+        return render_template('pages/home.html')
+      show = Show(
+        artist_id=existing_artist.id,
+        venue_id=existing_venue.id,
+        start_time=request.form['start_time']
+      )
+      db.session.add(show)
+      db.session.commit()
+      # on successful db insert, flash success
+      flash('Show was successfully listed!')
+      # TODO: on unsuccessful db insert, flash an error instead.
+      # e.g., flash('An error occurred. Show could not be listed.')
+      # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    except:
+      db.session.rollback()
+      flash('An error occurred. Show could not be listed.')
+    finally:
+      db.session.close()
+  else:
+    flash('Posting a show failed due to validation error(s)!')
+    flash(form.errors)
   return render_template('pages/home.html')
 
 @app.errorhandler(404)
