@@ -485,11 +485,43 @@ def create_artist_submission():
   # called upon submitting the new artist listing form
   # TODO: insert form data as a new Venue record in the db, instead
   # TODO: modify data to be the data object returned from db insertion
-
-  # on successful db insert, flash success
-  flash('Artist ' + request.form['name'] + ' was successfully listed!')
-  # TODO: on unsuccessful db insert, flash an error instead.
-  # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+  form = ArtistForm()
+  if form.validate_on_submit():
+    try:
+      artist = Artist(
+        name=request.form['name'],
+        city=request.form['city'],
+        state=request.form['state'],
+        phone=request.form['phone'],
+        image_link=request.form['image_link'],
+        seeking_venue= request.form['seeking_venue'] == 'Yes',
+        seeking_description=request.form['seeking_description'],
+        website=request.form['website'],
+        facebook_link=request.form['facebook_link']
+      )
+      for genre in request.form.getlist('genres'):
+        existing_genre = Genre.query.filter_by(name=genre).one_or_none()
+        if existing_genre:
+          artist.genres.append(existing_genre)
+        else:
+          new_genre = Genre(name=genre)
+          db.session.add(new_genre)
+          artist.genres.append(new_genre)
+      db.session.add(artist)
+      db.session.commit()
+      # on successful db insert, flash success
+      flash('Artist ' + request.form['name'] + ' was successfully listed!')
+    # TODO: on unsuccessful db insert, flash an error instead.
+    # e.g., flash('An error occurred. Artist ' + data.name + ' could not be listed.')
+    # see: http://flask.pocoo.org/docs/1.0/patterns/flashing/
+    except:
+      db.session.rollback()
+      flash('An error occurred. Artist ' + request.form['name'] + ' could not be listed.')
+    finally:
+      db.session.close()
+  else:
+    flash('Artist ' + request.form['name'] + ' failed due to validation error(s)!')
+    flash(form.errors)
   return render_template('pages/home.html')
 
 
