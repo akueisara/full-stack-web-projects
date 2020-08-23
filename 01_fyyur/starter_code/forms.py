@@ -109,7 +109,7 @@ class VenueForm(Form):
         'phone', validators=[Optional(), validate_phone]
     )
     image_link = StringField(
-        'image_link', validators=[Optional(), URL()]
+        'image_link', validators=[DataRequired(), URL()]
     )
     genres = SelectMultipleField(
         # TODO implement enum restriction
@@ -147,7 +147,7 @@ class ArtistForm(Form):
         'phone', validators=[Optional(), validate_phone]
     )
     image_link = StringField(
-        'image_link', validators=[Optional(), URL()]
+        'image_link', validators=[DataRequired(), URL()]
     )
     genres = SelectMultipleField(
         # TODO implement enum restriction
