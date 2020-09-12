@@ -1,3 +1,9 @@
+ <!-- 
+ Project Title 
+    Description of project and motivation
+    Screenshots (if applicable), with captions
+    Code Style if you are following particular style guides
+ -->
  # The Great Bookshelf of Udacity
 
 This project is a virtual bookshelf for Udacity students. Students are able to add their books to the bookshelf, give them a rating, update the rating and search through their book lists. As a part of the Fullstack Nanodegree, it serves as a practice module for lessons from Course 2: API Development and Documentation. By completing this project, students learn and apply their skills structuring and implementing well formatted API endpoints that leverage knowledge of HTTP and API development best practices. 
@@ -6,10 +12,16 @@ All backend code follows [PEP8 style guidelines](https://www.python.org/dev/peps
 
 ## Student Guidelines
 
-Hello students! You'll use this base in various workspaces throughout the course to build the project incrementally as you expand your skills. At each stage, there will be various 'TODO's marked for you to complete. You'll also notice some TODOs in the frontend section. You should referene those sections for formatting your endpoints and responses, and update the frontend to match the endpoints you choose and the programmed behavior. 
+Hello students! You'll use this base in various workspaces throughout the course to build the project incrementally as you expand your skills. At each stage, there will be various 'TODO's marked for you to complete. You'll also notice some TODOs in the frontend section. You should reference those sections for formatting your endpoints and responses, and update the frontend to match the endpoints you choose and the programmed behavior. 
 
 You should feel free to expand on the project in any way you can dream up to extend your skills. For instance, you could add additional book information to each entry or create individual book views including more information about the book, your thoughts or when you completed it. 
 
+<!-- 
+Getting Started
+    Prerequisites & Installation, including code samples for how to download all pre-requisites
+    Local Development, including how to set up the local development environment and run the project locally
+    Tests and how to run them
+ -->
 ## Getting Started
 
 ### Pre-requisites and Local Development 
@@ -54,7 +66,7 @@ The first time you run the tests, omit the dropdb command.
 
 All tests are kept in that file and should be maintained as updates are made to app functionality. 
 
-
+<!-- API Reference: If the API documentation is not very long, it can be included in the README -->
 ## API Reference
 
 ### Getting Started
@@ -62,9 +74,11 @@ All tests are kept in that file and should be maintained as updates are made to 
 - Authentication: This version of the application does not require authentication or API keys. 
 
 ### Error Handling
+
 - Response codes
 - Messages
 - Error types
+
 ### Endpoints 
 - Organized by resource
 - Include each endpoint
@@ -72,11 +86,13 @@ All tests are kept in that file and should be maintained as updates are made to 
 - Arguments including data types
 - Response object including status codes and data types 
 
+<!-- Deployment (if applicable) -->
 ## Deployment N/A
 
+<!-- Authors -->
 ## Authors
-Yours truly, Coach Caryn 
+@akueisara
 
+<!-- Acknowledgements -->
 ## Acknowledgements 
-The awesome team at Udacity and all of the students, soon to be full stack extraordinaires! 
-
+The awesome team at Udacity and all of the students, soon to be full stack extraordinaire! 

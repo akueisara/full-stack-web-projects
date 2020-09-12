@@ -2,8 +2,12 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 11.3
+-- Dumped by pg_dump version 11.3
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SELECT pg_catalog.set_config('search_path', '', false);
@@ -35,6 +39,7 @@ ALTER TABLE public.books OWNER TO student;
 --
 
 CREATE SEQUENCE public.books_id_seq
+    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -100,4 +105,3 @@ ALTER TABLE ONLY public.books
 --
 -- PostgreSQL database dump complete
 --
-
