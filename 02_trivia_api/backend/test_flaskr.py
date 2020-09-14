@@ -77,6 +77,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(data['total_questions'])
         self.assertTrue(len(data['questions']))
+        self.assertEqual(data['deleted'], 23)
         self.assertEqual(question, None)
 
     def test_422_if_question_does_not_exist(self):
