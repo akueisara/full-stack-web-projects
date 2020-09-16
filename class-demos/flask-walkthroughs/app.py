@@ -124,3 +124,5 @@ def images(jwt):
     # @TODO unpack the request header
     print(jwt)
     return 'not implemented'
+
+# Javascript to decode JWT: https://stackoverflow.com/questions/38552003/how-to-decode-jwt-token-in-javascript
