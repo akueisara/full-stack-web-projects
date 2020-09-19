@@ -1,0 +1,13 @@
+# JetBrains User-specific stuff
+.idea*
+
+# Node Dependency directories
+node_modules/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS generated files
+.DS_Store
