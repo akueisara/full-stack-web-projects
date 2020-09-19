@@ -75,7 +75,7 @@ def create_drink(jwt):
     body = request.get_json()
 
     new_title = body.get('title', None)
-    new_recipe = str(json.dumps(body.get('recipe', None)))
+    new_recipe = json.dumps(body.get('recipe'))
 
     try:
         drink = Drink(title=new_title, recipe=new_recipe)
@@ -86,7 +86,7 @@ def create_drink(jwt):
 
     return jsonify({
         'success': True,
-        'drinks': drink.long()
+        'drinks': [drink.long()]
     })
 
 '''
@@ -113,7 +113,7 @@ def update_drink(jwt, drink_id):
         if body.get("title"):
             drink.title = body.get('title')
         if body.get("recipe"):
-            drink.recipe = str(json.dumps(body.get('recipe')))
+            drink.recipe = json.dumps(body.get('recipe'))
 
         drink.update()
 
