@@ -7,6 +7,10 @@ from flask_cors import CORS
 from .database.models import db_drop_and_create_all, setup_db, Drink
 from .auth.auth import AuthError, requires_auth
 
+# Tips for how to structure a Flask app that allows scalability.
+# http://flask.pocoo.org/docs/0.12/patterns/packages/
+# https://www.digitalocean.com/community/tutorials/how-to-structure-large-flask-applications
+
 app = Flask(__name__)
 setup_db(app)
 CORS(app)
@@ -17,6 +21,9 @@ CORS(app)
 !! NOTE THIS MUST BE UNCOMMENTED ON FIRST RUN
 '''
 # db_drop_and_create_all()
+
+# A scalable way to build API endpoints with Flask:
+# https://flask-restful.readthedocs.io/en/latest/quickstart.html
 
 ## ROUTES
 '''
