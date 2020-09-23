@@ -17,7 +17,7 @@ Parameters:
   GitSourceRepo:
     Type: String
     Description: GitHub source repository - must contain a Dockerfile and buildspec.yml in the base
-    Default: full-stack-nanodegree
+    Default: deploy-flask-app-to-kubernetes-using-EKS
     MinLength: 1
     MaxLength: 100
     ConstraintDescription: You must enter a GitHub repository name
