@@ -3,7 +3,7 @@ from sqlalchemy import Column, String, create_engine, Integer
 from flask_sqlalchemy import SQLAlchemy
 import json
 
-database_path = os.environ['DATABASE_URL']
+database_path = os.environ.get('DATABASE_URL')
 
 db = SQLAlchemy()
 
@@ -62,7 +62,7 @@ class Actor(db.Model):
     __tablename__ = "actors"
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, nullable=False)
     age = Column(Integer, nullable=True)
     gender = Column(String, nullable=True)
 
