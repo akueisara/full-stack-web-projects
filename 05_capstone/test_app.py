@@ -163,6 +163,14 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['actors']))
 
+    def test_405_get_actors_not_allowed(self):
+        res = self.client().get('/actors/1', headers=casting_assistant_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'method not allowed')
+
     def test_update_actor(self):
         res = self.client().patch('/actors/2', headers=casting_director_auth_header, json=self.updated_actor)
         data = json.loads(res.data)
@@ -170,6 +178,14 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(len(data['actors']))
+
+    def test_404_update_actor_not_found(self):
+        res = self.client().patch('/actors/245', headers=casting_director_auth_header, json=self.updated_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 404)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'resource not found')
 
     def test_delete_actor(self):
         res = self.client().delete('/actors/1', headers=executive_producer_auth_header)
@@ -183,6 +199,15 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertTrue(len(data['actors']))
         self.assertEqual(data['deleted'], 1)
         self.assertEqual(actor, None)
+
+    def test_401_delete_actor_no_permission(self):
+        res = self.client().delete('/actors/1', headers=casting_assistant_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 401)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'Permission not found.')
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
