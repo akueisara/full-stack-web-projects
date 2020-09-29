@@ -1,5 +1,25 @@
 # Capstone Full Stack Project
 
+## Remote Host URL
+
+https://akueisara-capstone.herokuapp.com/ 
+
+## Motivations
+
+Working on this project is an opportunity for me to reinforce those skills and walk away very confident in them.
+
+- Coding in Python 3
+- Relational Database Architecture
+- Modeling Data Objects with SQLAlchemy
+- Internet Protocols and Communication
+- Developing a Flask API
+- Authentication and Access
+- Authentication with Auth0
+- Authentication in Flask
+- Role-Based Access Control (RBAC)
+- Testing Flask Applications
+- Deploying Applications
+
 ## Casting Agency Specifications
 The Casting Agency models a company that is responsible for creating movies and managing and assigning actors to those movies. You are an Executive Producer within the company and are creating a system to simplify and streamline your process.
 
@@ -55,7 +75,7 @@ This will install all of the required packages we selected within the `requireme
 
 - [jose](https://python-jose.readthedocs.io/en/latest/) JavaScript Object Signing and Encryption for JWTs. Useful for encoding, decoding, and verifying JWTS.
 
-## Running the server
+## Running the server locally
 
 From within the `./src` directory first ensure you are working using your created virtual environment.
 
@@ -72,8 +92,6 @@ flask run --reload
 ```
 
 The `--reload` flag will detect file changes and restart the server automatically.
-
-
 
 ## Testing
 To run the tests, run
