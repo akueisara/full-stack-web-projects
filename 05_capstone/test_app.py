@@ -5,15 +5,41 @@ from flask_sqlalchemy import SQLAlchemy
 from models import setup_db, Movie, Actor
 
 casting_assistant_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDQ5NTI3MTkwNjc4OTMwMTI0NzciLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjAxMzg3ODI0LCJleHAiOjE2MDEzOTUwMjQsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.hnngrrMkTdk1zAVgWLJ_clIKfLlTLr0HS99UwnhN5jHue6Ty7sVMTE7n9GVQWwF0deiVphmWa2B1cly1REPMS88zk92A-jNsWvvg8INmgGS8lEpbFTr3q3SflWK71D3usbPupHmhGVpixguF9Y_-HMBa82Y3yF5OBTYrZircHj7tFIU5FWXknb_JEi0buEFJ_w_R4nOtVcVNl6Rzkr1TpbTQpVQMUVStsxajhisrk0vzbhYwmAZxXAxJwzpMqc_kPmaCMxBQXLFnbGn06gTH_MGpmpeCRyhi2_27C5aQpMLVno6kCc86E51vIZZnMFTzUcyZfbiwdVBfTMiBJoKZrw"
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
+                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDQ5NTI3MTkwNjc4OTMwMTI0Nz"
+                     "ciLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
+                     "xMzk4ODkwLCJleHAiOjE2MDE0MDYwOTAsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
+                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.HC0ZXGjX"
+                     "ZY165lqTFxl_YNpUGc6YDLR6XPV49gf_JQis-lTNEc0uT41yN5PUMZBP_kxWLN7TwyWkrKrF_VcgXvPVGQLkHe9RXSnNzvl4W"
+                     "D3poicNsBNvSh3YA7saO-oKKYbMBKjOQJmZ7YPFpl4256NN6l3NHHJUr6kGNgGVFSiofx9cOw9pdWplHGDOqm2OYzVY83k2Y-"
+                     "_XmcYKqFmCDIh9wFYrjewnVI5VX81O6pXFfuNC3OKSNMZxZLFPnl3YwWnbSrhd0F7GktbYvbgHNYdEc7ooObTnM50UV25dNHT"
+                     "mscYRsrJOK0BJLcpdYQ9xk3SxKaCbEnVmfqMaMXhTUg"
 }
 
 casting_director_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg3MjE3NjY0OTc5MTQ0MzAxMjEiLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjAxMzg3NzcyLCJleHAiOjE2MDEzOTQ5NzIsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0Om1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIl19.puISiJvGXczbDhfeEgclw4fzIXqot65P0JY8BeCJBocrAypMJfmgHiG_E96WQzVNi92YuQxyZOp-tKMzMhHKHuVoqCcRmjyevcaeG1z6s8TroZRAFmhz4yrr1VFtGtDg8oAYtBGhWPrpti4vWPC1Kq2RRoyid6KpNFSTliuQCrDfRTzq71TbQtcehVr_aI25Dmd_JXFVk4sH_AhozMQinhG54rHFLTN95HIWVXvjFQdrPQ8aqD2bksKkwWwWGaUYbsfcKfxeyQ6oAwB4Pys_pR8DCdcDeuLyoVhsj7J_0Z9mdS4IGnAMjH91a4K8PGCJEGngTJaQfWH7dpfP84QEqA"
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
+                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg3MjE3NjY0OTc5MTQ0MzAxMj"
+                     "EiLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
+                     "xMzk4ODIzLCJleHAiOjE2MDE0MDYwMjMsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
+                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0O"
+                     "m1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIl19.BJTfmiGThUHBxHIJaRf7VsLPx"
+                     "U2q_bPlm-7luu0BqHn4rTKnHzoT4xXX8m5ctNLo7ocnEbNzYnOHiw9DFbSfkAvX6aAxZfjY5vkIDlCly6y3QVVBlhD0dcHyKB"
+                     "22WXekOEkKQfDjddCO6GNB77102MbQ-9GzndsNm7TnkgK7TkWz1dDBqMElSzce6sH0sk-IJALAEmXljhrjcufZGr1q_013g8p"
+                     "VrILFyIWYm0Jym5rph3jEY0vGH1_qeWA_MOIETvX6S6ecn3UEUkGLxnTxgx8NgVAYAbchkMvoLJFGYUSoov9j-eoJFubta6VX"
+                     "wDT4Vd1yeBZjM3MLsUud4ejrKg"
 }
 
 executive_producer_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg4MTEzMTk4NDExMjQxODUwNDgiLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjAxMzg3NjQ2LCJleHAiOjE2MDEzOTQ4NDYsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3Q6bW92aWVzIl19.DVP6SZxbX8pMYKtF69Tg5HmIyAEAJuOzmz7dkf0NxAmNlINN6gBosjNNI_P7XRmYVfw_8kzwh0SfZ3n3ejqWvc_0zV_U5623ennj7ss2Daax7KHYJ21BSLrjUQX9_x97v5BfIisYFcui2BcyNxW2be7LsfN_0FvP5n7c0a7dv6NMU_jD9aFNITSL2ZNM8E7elzTDy9YdyFQwO5xbMjj6yxtqXu2Mc4YWzP_kiPt5S87BtZxuhX5VYPHtJyi0vlEnas_a-35lX79gvvlaBupLOwWbiQuaWTJEYdyeptXI6BTcnfiLeCqcI0-8sBpAC4-iuN3GSBZCW7hN2rysfh8r1Q"
+    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
+                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg4MTEzMTk4NDExMjQxODUwND"
+                     "giLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
+                     "xMzk4NzYzLCJleHAiOjE2MDE0MDU5NjMsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
+                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ"
+                     "2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3"
+                     "Q6bW92aWVzIl19.uA49-W0bC3OMOdqp3QpOxyVYZXcXfkLpRkf411UDUeddhOirbokCkq2BHKe6Ltp5d2trAj9CG68mabiWQ6"
+                     "SfJsDGMBM-tmXF52tF3xbsN3Nkox_4G1tj5oqHT9zFr6mG5iEy8T4xCNTc-w-RVjIq356G3JvlvlolU71AD_j31lE7QBi8eDV"
+                     "onU1RgRMSeV4HFWC-CTKDU_9AokBnZe-erKu8a_h4ccJ-KGYH0ygoL0_u9J0EXPuoPjCLMmY_ZYTGO9SV8cB-VOnRp4wiz8VG"
+                     "vpBYYU8gA-Xsjz5LuXYDrBeMAHirkPh6ZqAg7U4DoJrF3nDpiQT3liw9h2bAq3LlKA"
 }
 
 class CapstoneTestCase(unittest.TestCase):
