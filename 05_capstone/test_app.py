@@ -2,8 +2,7 @@ import json
 import unittest
 from app import create_app
 from flask_sqlalchemy import SQLAlchemy
-from models import setup_db, Movie
-import os
+from models import setup_db, Movie, Actor
 
 casting_assistant_auth_header = {
     "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDQ5NTI3MTkwNjc4OTMwMTI0NzciLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjAxMzg3ODI0LCJleHAiOjE2MDEzOTUwMjQsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.hnngrrMkTdk1zAVgWLJ_clIKfLlTLr0HS99UwnhN5jHue6Ty7sVMTE7n9GVQWwF0deiVphmWa2B1cly1REPMS88zk92A-jNsWvvg8INmgGS8lEpbFTr3q3SflWK71D3usbPupHmhGVpixguF9Y_-HMBa82Y3yF5OBTYrZircHj7tFIU5FWXknb_JEi0buEFJ_w_R4nOtVcVNl6Rzkr1TpbTQpVQMUVStsxajhisrk0vzbhYwmAZxXAxJwzpMqc_kPmaCMxBQXLFnbGn06gTH_MGpmpeCRyhi2_27C5aQpMLVno6kCc86E51vIZZnMFTzUcyZfbiwdVBfTMiBJoKZrw"
@@ -24,11 +23,8 @@ class CapstoneTestCase(unittest.TestCase):
         """Define test variables and initialize app."""
         self.app = create_app()
         self.client = self.app.test_client
-        # self.database_name = "database_test"
-        # self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
-        self.database_name = "database_test"
-        project_dir = os.path.dirname(os.path.abspath(__file__))
-        self.database_path = "sqlite:///{}".format(os.path.join(project_dir, self.database_name))
+        self.database_name = "capstone_test"
+        self.database_path = "postgres://{}/{}".format('localhost:5432', self.database_name)
         setup_db(self.app, self.database_path)
 
         # binds the app to the current context
@@ -52,6 +48,12 @@ class CapstoneTestCase(unittest.TestCase):
             "name": "New Actor",
             "age": 20,
             "gender": "female"
+        }
+
+        self.updated_actor = {
+            "name": "New Actor Updated",
+            "age": 22,
+            "gender": "male"
         }
 
     def tearDown(self):
@@ -136,14 +138,51 @@ class CapstoneTestCase(unittest.TestCase):
         self.assertEqual(data['success'], False)
         self.assertEqual(data['message'], 'Permission not found.')
 
-    def create_actor(self):
+    def test_create_actor(self):
         res = self.client().post('/actors', headers=executive_producer_auth_header, json=self.new_actor)
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
         self.assertTrue(data['created'])
-        self.assertTrue(len(data['movies']))
+        self.assertTrue(len(data['actors']))
+
+    def test_405_if_actor_creation_not_allowed(self):
+        res = self.client().post('/actors/45', headers=casting_director_auth_header, json=self.new_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 405)
+        self.assertEqual(data['success'], False)
+        self.assertEqual(data['message'], 'method not allowed')
+
+    def test_get_actors(self):
+        res = self.client().get('/actors', headers=casting_assistant_auth_header)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['actors']))
+
+    def test_update_actor(self):
+        res = self.client().patch('/actors/2', headers=casting_director_auth_header, json=self.updated_actor)
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(len(data['actors']))
+
+    def test_delete_actor(self):
+        res = self.client().delete('/actors/1', headers=executive_producer_auth_header)
+        data = json.loads(res.data)
+
+        actor = Actor.query.filter(Actor.id == 1).one_or_none()
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(data['success'], True)
+        self.assertTrue(data['total_actors'])
+        self.assertTrue(len(data['actors']))
+        self.assertEqual(data['deleted'], 1)
+        self.assertEqual(actor, None)
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
