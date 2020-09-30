@@ -73,7 +73,7 @@ def create_app(test_config=None):
                 'movies': [movie.format()]
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(422)
 
@@ -96,7 +96,7 @@ def create_app(test_config=None):
                 'total_movies': len(Movie.query.all())
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(422)
 
@@ -122,7 +122,7 @@ def create_app(test_config=None):
                 'movies': [movie.format()]
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(400)
 
@@ -160,7 +160,7 @@ def create_app(test_config=None):
                 'actors': [actor.format()]
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(422)
 
@@ -183,7 +183,7 @@ def create_app(test_config=None):
                 'total_actors': len(Actor.query.all())
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(422)
 
@@ -211,7 +211,7 @@ def create_app(test_config=None):
                 'actors': [actor.format()]
             })
 
-        except:
+        except Exception:
             db.session.rollback()
             abort(400)
 
@@ -254,7 +254,6 @@ def create_app(test_config=None):
             'error': error.status_code,
             'message': error.error.get('description')
         }), error.status_code
-
     return app
 
 

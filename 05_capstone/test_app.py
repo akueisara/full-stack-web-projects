@@ -17,6 +17,7 @@ executive_producer_auth_header = {
     "Authorization": "Bearer {}".format(os.environ.get('PRODUCER_TOKEN'))
 }
 
+
 class CapstoneTestCase(unittest.TestCase):
     """This class represents the capstone test case"""
 
