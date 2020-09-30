@@ -35,9 +35,10 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         return response
 
+    @app.route('/')
     def index():
         return jsonify({
-            'message': 'Welcome to My api_name'
+            'message': 'Welcome to My Full Stack Capstone Project'
         })
 
     @app.route('/movies')
