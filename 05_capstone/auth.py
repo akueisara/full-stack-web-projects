@@ -1,15 +1,16 @@
+import os
 import json
-from flask import request, _request_ctx_stack, abort
+from flask import request, abort
 from functools import wraps
 from jose import jwt
 from urllib.request import urlopen
 
 
-AUTH0_DOMAIN = 'akueisara.us.auth0.com'
-ALGORITHMS = ['RS256']
-API_AUDIENCE = 'capstone'
-CLIENT_ID = 'T97NR87FuUeqlZecylQw8A8YnoulGJe6'
-CALLBACK_URL = 'http://localhost:8080'
+AUTH0_DOMAIN = os.environ.get('AUTH0_DOMAIN')
+ALGORITHMS = os.environ.get('AUTH0_ALGORITHMS')
+API_AUDIENCE = os.environ.get('AUTH0_API_AUDIENCE')
+CLIENT_ID = os.environ.get('AUTH0_CLIENT_ID')
+CALLBACK_URL = os.environ.get('AUTH0_CALLBACK_URL')
 
 ## AuthError Exception
 '''

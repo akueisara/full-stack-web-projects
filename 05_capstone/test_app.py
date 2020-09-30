@@ -1,3 +1,4 @@
+import os
 import json
 import unittest
 from app import create_app
@@ -5,41 +6,15 @@ from flask_sqlalchemy import SQLAlchemy
 from models import setup_db, Movie, Actor
 
 casting_assistant_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
-                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDQ5NTI3MTkwNjc4OTMwMTI0Nz"
-                     "ciLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
-                     "xMzk4ODkwLCJleHAiOjE2MDE0MDYwOTAsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
-                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImdldDphY3RvcnMiLCJnZXQ6bW92aWVzIl19.HC0ZXGjX"
-                     "ZY165lqTFxl_YNpUGc6YDLR6XPV49gf_JQis-lTNEc0uT41yN5PUMZBP_kxWLN7TwyWkrKrF_VcgXvPVGQLkHe9RXSnNzvl4W"
-                     "D3poicNsBNvSh3YA7saO-oKKYbMBKjOQJmZ7YPFpl4256NN6l3NHHJUr6kGNgGVFSiofx9cOw9pdWplHGDOqm2OYzVY83k2Y-"
-                     "_XmcYKqFmCDIh9wFYrjewnVI5VX81O6pXFfuNC3OKSNMZxZLFPnl3YwWnbSrhd0F7GktbYvbgHNYdEc7ooObTnM50UV25dNHT"
-                     "mscYRsrJOK0BJLcpdYQ9xk3SxKaCbEnVmfqMaMXhTUg"
+    "Authorization": "Bearer {}".format(os.environ.get('ASSISTANT_TOKEN'))
 }
 
 casting_director_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
-                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg3MjE3NjY0OTc5MTQ0MzAxMj"
-                     "EiLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
-                     "xMzk4ODIzLCJleHAiOjE2MDE0MDYwMjMsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
-                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJnZXQ6YWN0b3JzIiwiZ2V0O"
-                     "m1vdmllcyIsInBhdGNoOmFjdG9ycyIsInBhdGNoOm1vdmllcyIsInBvc3Q6YWN0b3JzIl19.BJTfmiGThUHBxHIJaRf7VsLPx"
-                     "U2q_bPlm-7luu0BqHn4rTKnHzoT4xXX8m5ctNLo7ocnEbNzYnOHiw9DFbSfkAvX6aAxZfjY5vkIDlCly6y3QVVBlhD0dcHyKB"
-                     "22WXekOEkKQfDjddCO6GNB77102MbQ-9GzndsNm7TnkgK7TkWz1dDBqMElSzce6sH0sk-IJALAEmXljhrjcufZGr1q_013g8p"
-                     "VrILFyIWYm0Jym5rph3jEY0vGH1_qeWA_MOIETvX6S6ecn3UEUkGLxnTxgx8NgVAYAbchkMvoLJFGYUSoov9j-eoJFubta6VX"
-                     "wDT4Vd1yeBZjM3MLsUud4ejrKg"
+    "Authorization": "Bearer {}".format(os.environ.get('DIRECTOR_TOKEN'))
 }
 
 executive_producer_auth_header = {
-    "Authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjRHU1A0YlMxa0tmSUgwajhlb3dOWSJ9.eyJpc3MiOiJod"
-                     "HRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vIiwic3ViIjoiZ29vZ2xlLW9hdXRoMnwxMDg4MTEzMTk4NDExMjQxODUwND"
-                     "giLCJhdWQiOlsiY2Fwc3RvbmUiLCJodHRwczovL2FrdWVpc2FyYS51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNjA"
-                     "xMzk4NzYzLCJleHAiOjE2MDE0MDU5NjMsImF6cCI6IlQ5N05SODdGdVVlcWxaZWN5bFF3OEE4WW5vdWxHSmU2Iiwic2NvcGUi"
-                     "OiJvcGVuaWQgcHJvZmlsZSBlbWFpbCIsInBlcm1pc3Npb25zIjpbImRlbGV0ZTphY3RvcnMiLCJkZWxldGU6bW92aWVzIiwiZ"
-                     "2V0OmFjdG9ycyIsImdldDptb3ZpZXMiLCJwYXRjaDphY3RvcnMiLCJwYXRjaDptb3ZpZXMiLCJwb3N0OmFjdG9ycyIsInBvc3"
-                     "Q6bW92aWVzIl19.uA49-W0bC3OMOdqp3QpOxyVYZXcXfkLpRkf411UDUeddhOirbokCkq2BHKe6Ltp5d2trAj9CG68mabiWQ6"
-                     "SfJsDGMBM-tmXF52tF3xbsN3Nkox_4G1tj5oqHT9zFr6mG5iEy8T4xCNTc-w-RVjIq356G3JvlvlolU71AD_j31lE7QBi8eDV"
-                     "onU1RgRMSeV4HFWC-CTKDU_9AokBnZe-erKu8a_h4ccJ-KGYH0ygoL0_u9J0EXPuoPjCLMmY_ZYTGO9SV8cB-VOnRp4wiz8VG"
-                     "vpBYYU8gA-Xsjz5LuXYDrBeMAHirkPh6ZqAg7U4DoJrF3nDpiQT3liw9h2bAq3LlKA"
+    "Authorization": "Bearer {}".format(os.environ.get('PRODUCER_TOKEN'))
 }
 
 class CapstoneTestCase(unittest.TestCase):

@@ -1,7 +1,6 @@
 import os
-from sqlalchemy import Column, String, create_engine, Integer
+from sqlalchemy import Column, String, Integer
 from flask_sqlalchemy import SQLAlchemy
-import json
 
 database_path = os.environ.get('DATABASE_URL')
 
@@ -11,8 +10,6 @@ db = SQLAlchemy()
 setup_db(app)
     binds a flask application and a SQLAlchemy service
 '''
-
-
 def setup_db(app, database_path=database_path):
     app.config["SQLALCHEMY_DATABASE_URI"] = database_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -21,13 +18,29 @@ def setup_db(app, database_path=database_path):
     db.create_all()
 
 
+class BaseModel(db.Model):
+    __abstract__ = True
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    def update(self):
+        db.session.commit()
+
+
 movie_actors = db.Table(
     'movie_actors',
     db.Column('movie_id', db.Integer, db.ForeignKey('movies.id'), primary_key=True),
     db.Column('actor_id', db.Integer, db.ForeignKey('actors.id'), primary_key=True)
 )
 
-class Movie(db.Model):
+
+class Movie(BaseModel):
     __tablename__ = 'movies'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -39,17 +52,6 @@ class Movie(db.Model):
         self.title = title
         self.release_date = release_date
 
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
-
     def format(self):
         return {
             'id': self.id,
@@ -58,7 +60,7 @@ class Movie(db.Model):
         }
 
 
-class Actor(db.Model):
+class Actor(BaseModel):
     __tablename__ = "actors"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -70,17 +72,6 @@ class Actor(db.Model):
         self.name = name
         self.age = age
         self.gender = gender
-
-    def insert(self):
-        db.session.add(self)
-        db.session.commit()
-
-    def update(self):
-        db.session.commit()
-
-    def delete(self):
-        db.session.delete(self)
-        db.session.commit()
 
     def format(self):
         return {

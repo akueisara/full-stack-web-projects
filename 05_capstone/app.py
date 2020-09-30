@@ -1,9 +1,15 @@
-from flask import Flask, request, abort, jsonify
+from flask import (
+    Flask,
+    request,
+    jsonify,
+    abort
+)
 from flask_cors import CORS
-from models import setup_db, Movie, Actor
+from models import setup_db, Movie, Actor, db
 from auth import AuthError, requires_auth
 
 DATA_PER_PAGE = 10
+
 
 def paginate_data(request, selection):
     page = request.args.get('page', 1, type=int)
@@ -14,6 +20,7 @@ def paginate_data(request, selection):
     current_questions = questions[start:end]
 
     return current_questions
+
 
 def create_app(test_config=None):
     # create and configure the app
@@ -27,6 +34,11 @@ def create_app(test_config=None):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization,true')
         response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
         return response
+
+    def index():
+        return jsonify({
+            'message': 'Welcome to My api_name'
+        })
 
     @app.route('/movies')
     @requires_auth('get:movies')
@@ -62,6 +74,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(422)
 
     @app.route('/movies/<int:movie_id>', methods=['DELETE'])
@@ -84,6 +97,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(422)
 
     @app.route('/movies/<int:movie_id>', methods=['PATCH'])
@@ -109,6 +123,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(400)
 
     @app.route('/actors')
@@ -146,6 +161,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(422)
 
     @app.route('/actors/<int:actor_id>', methods=['DELETE'])
@@ -168,6 +184,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(422)
 
     @app.route('/actors/<int:actor_id>', methods=['PATCH'])
@@ -195,6 +212,7 @@ def create_app(test_config=None):
             })
 
         except:
+            db.session.rollback()
             abort(400)
 
     @app.errorhandler(400)
@@ -238,6 +256,7 @@ def create_app(test_config=None):
         }), error.status_code
 
     return app
+
 
 app = create_app()
 
